@@ -48,6 +48,15 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidTokenException.class)
+public ResponseEntity<Map<String, Object>> handleInvalidToken(
+        InvalidTokenException ex) {
+
+    log.warn("InvalidTokenException: {}", ex.getMessage());
+
+    return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+}
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationException(
             MethodArgumentNotValidException ex) {

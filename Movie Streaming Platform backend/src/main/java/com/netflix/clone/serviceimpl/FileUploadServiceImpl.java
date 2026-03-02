@@ -1,18 +1,22 @@
 package com.netflix.clone.serviceimpl;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.netflix.clone.service.FileUploadService;
 import com.netflix.clone.util.FileHandlerUtil;
-
 import static com.netflix.clone.util.FileHandlerUtil.extractFileExtension;
 
 import jakarta.annotation.PostConstruct;
@@ -184,4 +188,24 @@ public class FileUploadServiceImpl implements FileUploadService {
                 .header(HttpHeaders.CONTENT_RANGE, "bytes */" + fileLength)
                 .build();
     }
+
+    public ResponseEntity<Resource> serveImage(String uuid) {
+    try {
+        Path filePath = FileHandlerUtil.findFileByUuid(imageStorageLocation, uuid);
+        Resource resource = FileHandlerUtil.createFullResource(filePath);
+
+        String filename = resource.getFilename();
+        String contentType = FileHandlerUtil.detectImageContentType(filename);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                .body(resource);
+
+    } catch (Exception ex) {
+        return ResponseEntity.notFound().build();
+    }
+}
+
+
 }

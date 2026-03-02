@@ -59,5 +59,10 @@ public ResponseEntity<Resource> serveVideo(
     return fileUploadService.serveVideo(uuid, rangeHeader);
 }
 
+@GetMapping("/image/{uuid}")
+public ResponseEntity<Resource> serveImage(@PathVariable String uuid) {
+    return fileUploadService.serveImage(uuid);
+}
+
 
 }
