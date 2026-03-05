@@ -14,33 +14,54 @@
       <h2>Verifying your email...</h2>
     </div>
 
-    <!-- Success -->
-    <div *ngIf="!loading && success" class="success-container">
-      <mat-icon class="success-icon">check_circle</mat-icon>
-      <h1>Email Verified!</h1>
-      <p class="message">{{ message }}</p>
+    <!-- Result -->
+    <ng-container *ngIf="!loading">
 
-      <button mat-flat-button class="action-btn" routerLink="/login">
-        Go to Login
-      </button>
-    </div>
+      <!-- Success -->
+      <div *ngIf="success" class="success-container">
+        <mat-icon class="success-icon" aria-hidden="true">
+          check_circle
+        </mat-icon>
 
-    <!-- Error -->
-    <div *ngIf="!loading && !success" class="error-container">
-      <mat-icon class="error-icon">error_outline</mat-icon>
-      <h1>Verification Failed!</h1>
-      <p class="message">{{ message }}</p>
+        <h1>Email Verified!</h1>
+        <p class="message">{{ message }}</p>
 
-      <div class="actions">
-        <button mat-flat-button class="action-btn" routerLink="/login">
+        <button
+          mat-flat-button
+          class="action-btn"
+          type="button"
+          routerLink="/login"
+        >
           Go to Login
         </button>
-
-        <p class="resend-info">
-          You can request a new verification email from the login page.
-        </p>
       </div>
-    </div>
+
+      <!-- Error -->
+      <div *ngIf="!success" class="error-container">
+        <mat-icon class="error-icon" aria-hidden="true">
+          error_outline
+        </mat-icon>
+
+        <h1>Verification Failed!</h1>
+        <p class="message">{{ message }}</p>
+
+        <div class="actions">
+          <button
+            mat-flat-button
+            class="action-btn"
+            type="button"
+            routerLink="/login"
+          >
+            Go to Login
+          </button>
+
+          <p class="resend-info">
+            You can request a new verification email from the login page.
+          </p>
+        </div>
+      </div>
+
+    </ng-container>
 
   </mat-card>
 </div>

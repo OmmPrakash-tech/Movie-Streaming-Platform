@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
+import { NgModule, provideAppInitializer, provideBrowserGlobalErrorListeners, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -14,6 +14,10 @@ import { Login } from './login/login';
 import { VerifyEmailComponent } from './verify-email/verify-email';
 
 import { SharedModule } from './shared/shared-module';
+import { Home } from './user/home/home';
+import { authInterceptor } from './shared/interceptors/auth-interceptor';
+import { ForgotPassword } from './forgot-password/forgot-password';
+import { AuthService } from './shared/services/auth-service'
 
 @NgModule({
   declarations: [
@@ -21,18 +25,26 @@ import { SharedModule } from './shared/shared-module';
     Landing,
     Signup,
     Login,
-    VerifyEmailComponent
+    VerifyEmailComponent,
+    Home,
+    ForgotPassword
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SharedModule,
-    HttpClientModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
-  providers: [],
-  bootstrap: [App]
+  providers: [
+    provideAppInitializer(() => {
+      const auth = inject(AuthService);
+      return auth.initializeAuth();
+    }),
+    provideBrowserGlobalErrorListeners(),
+    provideHttpClient(withInterceptors([authInterceptor])),
+  ],
+  bootstrap: [App],
 })
 export class AppModule {}

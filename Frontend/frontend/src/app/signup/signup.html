@@ -15,7 +15,7 @@
       <!-- Full Name -->
       <mat-form-field appearance="outline" class="field">
         <mat-label>Full Name</mat-label>
-        <input matInput formControlName="fullName">
+        <input matInput formControlName="fullName" />
         <mat-icon matPrefix>person</mat-icon>
 
         <mat-error *ngIf="signupForm.get('fullName')?.hasError('required')">
@@ -30,7 +30,7 @@
       <!-- Email -->
       <mat-form-field appearance="outline" class="field">
         <mat-label>Email</mat-label>
-        <input matInput formControlName="email">
+        <input matInput formControlName="email" />
         <mat-icon matPrefix>email</mat-icon>
 
         <mat-error *ngIf="signupForm.get('email')?.hasError('required')">
@@ -50,7 +50,8 @@
           matInput
           [type]="hidePassword ? 'password' : 'text'"
           formControlName="password"
-        >
+          autocomplete="new-password"
+        />
 
         <mat-icon matPrefix>lock</mat-icon>
 
@@ -59,6 +60,7 @@
           matSuffix
           type="button"
           (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
           tabindex="-1"
         >
           <mat-icon>
@@ -83,7 +85,8 @@
           matInput
           [type]="hideConfirmPassword ? 'password' : 'text'"
           formControlName="confirmPassword"
-        >
+          autocomplete="new-password"
+        />
 
         <mat-icon matPrefix>lock_outline</mat-icon>
 
@@ -92,6 +95,7 @@
           matSuffix
           type="button"
           (click)="hideConfirmPassword = !hideConfirmPassword"
+          [attr.aria-label]="hideConfirmPassword ? 'Show password' : 'Hide password'"
           tabindex="-1"
         >
           <mat-icon>
@@ -108,17 +112,17 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- Submit Button -->
+      <!-- Submit -->
       <button
         mat-flat-button
         class="sign-up-btn"
         type="submit"
-        [disabled]="loading || !signupForm.valid"
+        [disabled]="loading || signupForm.invalid"
       >
         {{ loading ? 'Creating Account...' : 'Sign Up' }}
       </button>
 
-      <!-- Signin Link -->
+      <!-- Signin -->
       <div class="signin">
         <span>Already have an account?</span>
         <a routerLink="/login">Sign in now.</a>

@@ -29,12 +29,23 @@ export class Landing implements OnInit {
   }
 
   getStarted() {
+
+    // Prevent navigation if form is invalid
+    if (this.landingForm.invalid) {
+      this.landingForm.markAllAsTouched();
+      return;
+    }
+
+    const email = this.landingForm.value.email
+      ?.trim()
+      .toLowerCase();
+
     this.router.navigate(['/signup'], {
-      queryParams: { email: this.landingForm.value.email }
+      queryParams: { email }
     });
   }
 
-  reasons = [
+  readonly reasons = [
     {
       title: 'Enjoy on your TV',
       text: 'Watch on smart TVs, PlayStation, Xbox, Chromecast, Apple TV, Blu-ray players and more.',
@@ -57,7 +68,7 @@ export class Landing implements OnInit {
     }
   ];
 
-  faqs = [
+  readonly faqs = [
     {
       question: 'What is PulseScreen?',
       answer: 'PulseScreen is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries and more.'

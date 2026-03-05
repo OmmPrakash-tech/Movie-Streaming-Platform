@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from '../shared/services/auth-service';
 
 @Component({
@@ -21,28 +22,32 @@ export class VerifyEmailComponent implements OnInit {
 
   ngOnInit(): void {
 
-    const token = this.route.snapshot.queryParamMap.get('token');
+    this.route.queryParamMap.subscribe(params => {
 
-    console.log('TOKEN =', token); // ⭐ check console
+      const token = params.get('token');
 
-    if (!token) {
-      this.loading = false;
-      this.success = false;
-      this.message = 'Invalid verification link.';
-      return;
-    }
-
-    this.authService.verifyEmail(token).subscribe({
-      next: (res: any) => {
-        this.loading = false;
-        this.success = true;
-        this.message = res.message;
-      },
-      error: (err) => {
+      if (!token) {
         this.loading = false;
         this.success = false;
-        this.message = err.error?.error || 'Verification failed.';
+        this.message = 'Invalid verification link.';
+        return;
       }
+
+      this.authService.verifyEmail(token)
+        .pipe(
+          finalize(() => this.loading = false)
+        )
+        .subscribe({
+          next: (res: any) => {
+            this.success = true;
+            this.message = res?.message || 'Email verified successfully.';
+          },
+          error: (err) => {
+            this.success = false;
+            this.message =
+              err.error?.error || 'Verification failed.';
+          }
+        });
     });
   }
 }

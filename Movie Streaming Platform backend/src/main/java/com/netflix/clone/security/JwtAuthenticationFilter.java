@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,15 +31,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String requestURI = request.getRequestURI();
+
+        // ✅ 1. Skip authentication for auth endpoints
+        if (requestURI.startsWith("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String jwt = extractJwtToken(request);
         String username = null;
 
-        if (jwt != null) {
-            username = jwtUtil.getUsernameFromToken(jwt);
-        }
+        try {
 
-        if (shouldProcessAuthentication(username)) {
-            processAuthentication(request, jwt, username);
+            if (jwt != null) {
+                username = jwtUtil.getUsernameFromToken(jwt);
+            }
+
+            if (shouldProcessAuthentication(username)) {
+                processAuthentication(request, jwt, username);
+            }
+
+        } catch (ExpiredJwtException e) {
+            // ✅ Token expired — ignore and continue
+            System.out.println("JWT expired. Skipping authentication.");
+        } catch (Exception e) {
+            // ✅ Any other JWT error — ignore and continue
+            System.out.println("Invalid JWT. Skipping authentication.");
         }
 
         filterChain.doFilter(request, response);
