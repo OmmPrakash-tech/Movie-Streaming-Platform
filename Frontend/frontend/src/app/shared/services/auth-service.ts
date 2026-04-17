@@ -5,6 +5,23 @@ import { environment } from '../../../environments/environment';
 import { BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
+type AuthResponse = {
+  token?: string;
+  accessToken?: string;
+  jwt?: string;
+  bearerToken?: string;
+  user?: any;
+  data?: {
+    user?: any;
+  };
+  id?: number | string;
+  email?: string;
+  fullName?: string;
+  role?: string;
+  active?: boolean;
+  emailVerified?: boolean;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -47,20 +64,55 @@ export class AuthService {
     });
   }
 
-  login(loginData: any) {
+  login(loginData: { email: string; password: string }) {
     return this.http.post(`${this.apiUrl}/login`, loginData).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }
 
- handleAuthSuccess(authData: any) {
-  if (authData?.token) {
-    localStorage.setItem('token', authData.token);
+  handleAuthSuccess(authData: AuthResponse) {
+    const token = this.extractToken(authData);
+    const user = this.extractUser(authData);
+
+    if (token) {
+      localStorage.setItem('token', token);
+    }
+
+    if (user) {
+      this.setCurrentUser(user);
+    }
   }
 
-  // store only the user object
-  this.setCurrentUser(authData.user);
-}
+  private extractToken(authData: AuthResponse): string | null {
+    return authData?.token ||
+      authData?.accessToken ||
+      authData?.jwt ||
+      authData?.bearerToken ||
+      null;
+  }
+
+  private extractUser(authData: AuthResponse): any | null {
+    if (authData?.user) {
+      return authData.user;
+    }
+
+    if (authData?.data?.user) {
+      return authData.data.user;
+    }
+
+    if (authData?.email || authData?.role || authData?.fullName) {
+      return {
+        id: authData.id,
+        email: authData.email,
+        fullName: authData.fullName,
+        role: authData.role,
+        active: authData.active,
+        emailVerified: authData.emailVerified
+      };
+    }
+
+    return null;
+  }
 
   setCurrentUser(user: any | null) {
     this.currentUserSubject.next(user);
@@ -112,7 +164,7 @@ initializeAuth(): Promise<void> {
 
     this.fetchCurrentUser().subscribe({
       next: (user) => {
-        this.handleAuthSuccess(user);
+        this.setCurrentUser(user);
         resolve();
       },
       error: () => {
