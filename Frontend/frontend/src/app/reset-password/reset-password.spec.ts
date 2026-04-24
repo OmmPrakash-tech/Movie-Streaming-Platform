@@ -3,17 +3,17 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
-import { VerifyEmailComponent } from './verify-email';
+import { ResetPassword } from './reset-password';
 import { SharedModule } from '../shared/shared-module';
 
-describe('VerifyEmail', () => {
-  let component: VerifyEmailComponent;
-  let fixture: ComponentFixture<VerifyEmailComponent>;
+describe('ResetPassword', () => {
+  let component: ResetPassword;
+  let fixture: ComponentFixture<ResetPassword>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SharedModule],
-      declarations: [VerifyEmailComponent],
+      declarations: [ResetPassword],
       providers: [
         provideHttpClient(),
         provideRouter([])
@@ -21,7 +21,7 @@ describe('VerifyEmail', () => {
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(VerifyEmailComponent);
+    fixture = TestBed.createComponent(ResetPassword);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

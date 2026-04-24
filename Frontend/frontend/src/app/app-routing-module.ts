@@ -10,6 +10,8 @@ import { Home } from './user/home/home';
 import { authGuard } from './shared/guards/auth-guard';
 import { adminGuard } from './shared/guards/admin-guard';
 import { ForgotPassword } from './forgot-password/forgot-password';
+import { ResetPassword } from './reset-password/reset-password';
+
 
 const routes: Routes = [
 
@@ -18,6 +20,7 @@ const routes: Routes = [
   { path: 'signup', component: Signup },
   {path:'forgot-password', component: ForgotPassword},
   { path: 'verify-email', component: VerifyEmailComponent },
+  { path: 'reset-password', component: ResetPassword },
 
   {
     path: 'admin',

@@ -1,4 +1,9 @@
-import { NgModule, provideAppInitializer, provideBrowserGlobalErrorListeners, inject } from '@angular/core';
+import {
+  NgModule,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+  inject,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
@@ -17,7 +22,8 @@ import { SharedModule } from './shared/shared-module';
 import { Home } from './user/home/home';
 import { authInterceptor } from './shared/interceptors/auth-interceptor';
 import { ForgotPassword } from './forgot-password/forgot-password';
-import { AuthService } from './shared/services/auth-service'
+import { AuthService } from './shared/services/auth-service';
+import { ResetPassword } from './reset-password/reset-password';
 
 @NgModule({
   declarations: [
@@ -27,7 +33,8 @@ import { AuthService } from './shared/services/auth-service'
     Login,
     VerifyEmailComponent,
     Home,
-    ForgotPassword
+    ForgotPassword,
+    ResetPassword,
   ],
   imports: [
     BrowserModule,
